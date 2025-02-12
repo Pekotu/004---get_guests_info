@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulář pro ubytování</title>
+    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"> -->
+    <style>
+        .logo {
+            display: block; 
+            margin-left: auto; 
+            margin-right: auto;
+            
+            width: clamp(100px, 20%, 200px); 
+            /* margin-top: 20px; 
+            margin-bottom: 5px; */
+            box-shadow: 1px 1px 20px rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            margin-bottom: -10px;
+        }
+
+       
+        
+        h1 {
+            text-align: center;
+            color: #A20992;
+            font-size: large;
+            margin-bottom: 30px;
+            margin-top: 30px;
+            text-decoration: none;
+        }
+
+        .table_div {
+            
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+            margin: 0 auto;
+            width: clamp(250px, 80%, 500px);
+            /* max-width: 100%; */
+            font-size: clamp(14px, 2vw, 20px);
+            border: 1px solid #e4e4e4;
+            box-shadow: 1px 1px 20px rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+        }
+
+        .appartment_name_p{
+            text-align: center;
+            color: #000000;
+            font-size: clamp(12px, 2vw, 15px);
+            margin-bottom: 5px;
+            text-decoration: none;
+            margin-top: 25px;
+        }
+
+        .appartment_name_p span {
+            color: #808080;
+        }
+
+        .table1 {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            margin: 0 auto;
+            width: 100%;
+            /* max-width: 100%; */
+            font-size: clamp(12px, 2vw, 15px);
+            border: 0px solid #ea208b;
+            padding-left: 20px;
+            padding-right: 20px;
+            padding-bottom: 20px;
+            margin-top: 25px;
+            font-size: clamp(12px, 2vw, 16px);
+
+
+            
+        }
+
+        .t1tdL1 {
+            width: 500px;
+            padding-right: 20px;
+            text-align: right;
+            border-right: 0px solid #A20992;
+            color: #7a7a7a;
+            text-decoration: none;
+            /* border: 0px solid #15e96a; */
+        }
+
+        
+        .t1tdP2 {
+            width: 500px;
+            padding-left: 20px;
+            text-align: left;
+            border-right: 0px solid #A20992;
+            color: #000000;
+            /* border: 0px solid #15e96a; */
+        }
+
+        /* ------------------ */
+        .table2 {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            margin: 0 auto;
+            width: 100%;
+            /* max-width: 100%; */
+            font-size: clamp(12px, 2vw, 15px);
+            border: 0px solid #ea208b;
+            padding-left: 20px;
+            padding-right: 20px;
+            padding-bottom: 30px;
+            font-size: clamp(12px, 2vw, 16px);
+            
+        }
+
+        .t2tdL1 {
+            width: 500px;
+            padding: 5px;
+            text-align: left;
+            border-right: 1px solid #A20992;
+            color: #7a7a7a;
+            text-decoration: none;
+            
+            
+        }
+
+        .t2tdL2 {
+            width: 500px;
+            padding-left: 20px;
+            text-align: left;
+            border-right: 1px solid #A20992;
+            color: #000000;
+            
+        }
+
+        .t2tdP1 {
+            width: 500px;
+            padding: 5px;
+            text-align: right;
+            border-right: 0px solid #A20992;
+            color: #7a7a7a;
+            text-decoration: none;
+            
+        }
+
+        .t2tdP2 {
+            width: 500px;
+            padding-right: 20px;
+            text-align: right;
+            border-right: 0px solid #A20992;
+            color: #000000;
+            
+        }
+
+        /* -------------------- */
+        .date_format {
+            color: #808080;
+            font-size: clamp(10px, 1.5vw, 15px);;
+        }
+
+        #ubytovaniForm {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+            margin: 0 auto;
+            max-width: 100%;
+        }
+
+        fieldset {
+            border: 1px solid #d8d7d7;
+            padding: 25px;
+            border-radius: 5px;
+            width: 300px;
+            box-sizing: border-box;
+            box-shadow: 1px 1px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        legend {
+            font-size: clamp(12px, 2vw, 16px);;
+            font-weight: normal;
+            color: #5e5d5d;
+            margin-bottom: 15px;
+            border: 1px solid #d8d7d7;
+            background-color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            box-shadow: 1px 1px 10px rgba(0, 0, 0, 0.2);
+
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            align-items: left;
+            margin-bottom: 15px;
+        }
+
+        .form-group-div {
+            display: block;
+            align-items: left;
+            margin-bottom: 3px;
+            margin-left: 0px;
+        }
+
+        .form-group label {
+            font-weight: normal;
+            margin-bottom: 5px;
+            color: #5e5d5d;
+        }
+
+        .form-group input {
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .gdpr_div0 {
+            width: 100%; 
+            text-align: center; 
+            align-content: center;  
+            border: 0px solid #de1c1c;
+        }
+
+        .gdpr_div1 {  
+            box-sizing: border-box; /* Zahrne padding a border do šířky a výšky */
+            width: clamp(250px,100%,500px); 
+            text-align: center; 
+            margin-left:auto; 
+            margin-right: auto ;
+            margin-top: 0px; 
+            display: flex; 
+            flex-direction: row; 
+            align-items: left;
+            padding-left: 15px; 
+            padding-right: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-shadow: 1px 1px 10px rgba(0, 0, 0, 0.2);
+}
+        button {
+            width: clamp(250px, 100%, 500px);
+            padding: 15px;
+            font-size: 16px;
+            font-weight: bold;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 0 auto;
+            display: inline-block;
+            box-shadow: 1px 1px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+
+        .barva-hvedicka {
+            color: rgb(255, 154, 154);
+        }
+
+        #indikator {
+            display: none;
+            width: 30px;
+            height: 30px;
+            border: 4px solid #f0f0f0;
+            border-radius: 50%;
+            border-top: 4px solid #3498db;
+            animation: spin 1s linear infinite;
+            }
+
+            @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+            }
+    </style>
+
+</head>
+<body>
+    
+
+    
+    <img src="{{ url_for('static', filename='images/homevibes-logo5.png') }}" alt="homevibes.cz" class="logo">
+
+    <div class="table_div">
+
+        <table class="table1">
+            <tr>
+                <td class="t1tdL1">{{content['apartment_name']}}:</td>
+                <td class="t1tdP2">{{wd['property_name']}}</td>
+            </tr>
+            <tr>
+                <td class="t1tdL1">{{content['number_of_guests']}}:</td>
+
+                <td class="t1tdP2">{{ wd['number_of_guests'] }}</td>
+            </tr>
+        </table>
+        <!-- ------------- -->
+
+        <table class="table2">
+            
+            
+            <tr>
+                <td class="t2tdL1">{{content['check_in']}} <span  class="date_format">  [d.m.y]</span>:</td>
+                <td class="t2tdP1">{{content['check_out']}} <span  class="date_format">  [d.m.y]</span>:</td>
+                
+            </tr>
+            <tr>
+                
+                <td class="t2tdL2"> 
+                    {{ wd['check_in_f'] }}   <br> {{content['after']|lower}} 15:00</td> 
+                
+                <td class="t2tdP2"> {{ wd['check_out_f'] }}
+                     <br>
+                     {{content['before'] |lower}} 10:00 </td>
+                
+                
+            </tr>
+
+            
+        </table>
+    </div>
+
+    <h1>{{content['title']}}</h1>
+
+    <!-- Error zprava -->
+    <p style="text-align: center; margin-top: 30px; width: 100%; color: red; font-size: 20px; text-align: center;">{{error_message|safe}}</p>
+    
+   
+    <p style="text-align: center; margin-top: 30px;">{{content['children']}}</p>
+
+    <p style="text-align: center; margin-top: 30px;"><span class="barva-hvedicka">*</span> - {{content['mandatory']}}</p>
+
+    <form id="ubytovaniForm" method="post" onsubmit="validateForm(event)" action="{{url_for('submit_form')}}">
+
+        {% for guest in range(wd['number_of_guests']) %}
+                <fieldset>
+                    
+                    <legend>{{content['guest']|lower}} {{ guest+1 }}</legend>
+
+                    <div class="form-group">
+                        <div class="form-group-div">
+                            <i class="fas fa-user"></i>
+                            <label for="first_name_{{ guest }}">{{content['first_name']}} <span class="barva-hvedicka">*</span></label>
+
+                        </div >
+                        <input type="text" id="first_name_{{ guest }}" name="first_name_{{ guest }}" placeholder="" value="{{form_data.get('first_name_'+guest|string, '')}}" required>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="form-group-div">
+                            <i class="fas fa-user"></i>
+                            <label for="family_name_{{ guest }}">{{content['family_name']}} <span class="barva-hvedicka">*</span></label>
+
+                        </div>
+                        <input type="text" id="family_name_{{ guest }}" name="family_name_{{ guest }}" placeholder="" value="{{form_data.get('family_name_'+guest|string, '')}}" required>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="form-group-div">
+                            <i class="fas fa-birthday-cake"></i>
+                            <label for="birthday_{{ guest }}">{{content['birthdate']}} <span class="barva-hvedicka">*</span></label>
+                        </div>
+                        <input type="date" id="birthday_{{ guest }}" name="birthday_{{ guest }}" value="{{form_data.get('birthday_'+guest|string, '')}}" required onchange="checkAge('{{guest}}')">
+                    </div>
+                    <!-- ---------------------------------------------- -->
+
+                    <div class="form-group">
+                        <div class="form-group-div">
+                            <i class="fas fa-home"></i>
+                            <label for="street_{{ guest }}">{{content['street']}} <span class="barva-hvedicka hvezdicka_{{guest}}"  >*</span></label>
+                        </div>
+                        <input type="text" id="street_{{ guest }}" name="street_{{ guest }}" placeholder="" value="{{form_data.get('street_'+guest|string, '')}}" required>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="form-group-div">
+                            <i class="fas fa-home"></i>
+                            <label for="town_{{ guest }}">{{content['town']}} <span class="barva-hvedicka hvezdicka_{{guest}}"  >*</span></label>
+                        </div>
+                        <input type="text" id="town_{{ guest }}" name="town_{{ guest }}" placeholder="" value="{{form_data.get('town_'+guest|string, '')}}" required>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="form-group-div">
+                            <i class="fas fa-home"></i>
+                            <label for="country_{{ guest }}">{{content['country']}} <span class="barva-hvedicka hvezdicka_{{guest}}"  >*</span></label>
+                        </div>
+                        <input type="text" id="country_{{ guest }}" name="country_{{ guest }}" placeholder="" value="{{form_data.get('country_'+guest|string, '')}}" required>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="form-group-div">
+                            <i class="fas fa-id-card"></i>
+                            <label for="passport_{{ guest }}">{{content['id']}} <span class="barva-hvedicka hvezdicka_{{guest}}"  >*</span></label>
+                        </div>
+                        <input type="text" id="passport_{{ guest }}" name="passport_{{ guest }}" placeholder="" value="{{form_data.get('passport_'+guest|string, '')}}" required>
+                    </div>
+
+
+                    <div class="form-group">
+                        <div class="form-group-div">
+                            <i class="fas fa-phone"></i>
+                            <label for="phone_{{ guest }}">{{content['phone']}} <span class="barva-hvedicka hvezdicka_{{guest}}"  >*</span></label>
+                        </div>
+                        <input type="tel" id="phone_{{ guest }}" name="phone_{{ guest }}" placeholder="" value="{{form_data.get('phone_'+guest|string, '')}}" required>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="form-group-div">
+                            <i class="fas fa-envelope"></i>
+                            <label for="email_{{ guest }}">{{content['email']}} <span class="barva-hvedicka hvezdicka_{{guest}}"  >*</span></label>
+                        </div>
+                        <input type="email" id="email_{{ guest }}" name="email_{{ guest }}" placeholder="" value="{{form_data.get('email_'+guest|string, '')}}" required>
+                    </div>
+
+                    <input type="hidden" name="id" value="{{ wd['id'] }}">
+                    <input type="hidden" name="webhook_data" value="{{ wd }}">
+                    <input type="hidden" name="counter_of_saving" value="{{form_data.get('counter_of_saving', 0)}}">
+
+                </fieldset>
+
+        {% endfor %}
+        <!-- gdpr -->
+        <div class="gdpr_div0" >
+            <div class="gdpr_div1">
+                <input type="checkbox" id="gdpr" name="gdpr" placeholder="" required></input>
+                <p><span class="barva-hvedicka hvezdicka_{{guest}}"  >*</span> {{content['gdpr']}} <br> 
+                <a href="/gdpr" target="_blank">{{content['gdpr_link']}}</a></p>
+                
+                
+            </div>
+        </div>
+        <!-- spinner -->
+        <div id="indikator"></div>
+        <!-- tlačitko -->
+            <div style="width: 100%; text-align: center; margin-top: 20px;">
+                <button type="submit" id="odeslat">{{content['submit']}}</button>
+            </div>
+    </form>
+
+
+    <style>
+        /* Styl pro deaktivovaná pole */
+        input:disabled {
+            background-color: #b2b1b1;  /* Lososová barva */
+            color: #888; /* Šedá barva textu pro lepší kontrast */
+            cursor: not-allowed;  /* Změna kurzoru na "nepovolený" */
+
+        }
+    </style>
+
+
+    <script>
+        // Funkce pro kontrolu věku hosta a nastavení stavu polí
+        function checkAge(guestIndex) {
+            const birthday = document.getElementById("birthday_" + guestIndex).value;
+            const today = new Date();
+            const birthDate = new Date(birthday);
+            const age = today.getFullYear() - birthDate.getFullYear();
+            const m = today.getMonth() - birthDate.getMonth();
+
+            // definice
+            const phoneInput = document.getElementById("phone_" + guestIndex);
+            const streetInput = document.getElementById("street_" + guestIndex);
+            const townInput = document.getElementById("town_" + guestIndex);
+            const countryInput = document.getElementById("country_" + guestIndex);
+            const passportInput = document.getElementById("passport_" + guestIndex)
+            
+            const emailInput = document.getElementById("email_" + guestIndex)
+
+            // Získání hodnoty pro check-in a check-out
+            //const check_in_value = document.getElementById("check_in_" + guestIndex).value;
+            //const check_out_value = document.getElementById("check_out_" + guestIndex).value;
+
+
+            //
+            if (age < 18 || (age === 18 && m < 0)) {
+                // Pokud host je mladší než 18 let, deaktivujeme pole mimo jmena a datumu narození
+                phoneInput.disabled = true;
+                streetInput.disabled = true;
+                townInput.disabled = true;
+                countryInput.disabled = true;
+                passportInput.disabled = true;
+                emailInput.disabled = true;
+
+                // Skryje hvezdicku
+                const barvaElements = document.querySelectorAll('.hvezdicka_'+guestIndex);
+                barvaElements.forEach(function(element) {
+                    element.style.display = 'none'; // Skryje text
+                });
+                // Vymaže hodnoty
+                streetInput.value = "";
+                townInput.value = "";
+                countryInput.value = "";
+                passportInput.value = "";
+                
+                emailInput.value = "";
+                phoneInput.value = "";
+
+            } else {
+                // Pokud host má 18 let nebo více, aktivujeme pole
+                
+                streetInput.disabled = false;
+                townInput.disabled = false;
+                countryInput.disabled = false;
+                passportInput.disabled = false;
+                phoneInput.disabled = false;
+                emailInput.disabled = false;
+
+
+                // Zobrazi hvezdicku
+                const barvaElements = document.querySelectorAll('.hvezdicka_'+guestIndex);
+                barvaElements.forEach(function(element) {
+
+                    element.style.display = 'inline';
+                });
+            }
+        }
+
+        // Volání funkce při načítání formuláře (pro všechny hosty)
+        document.addEventListener('DOMContentLoaded', function() {
+            // Předpokládáme, že máte seznam hostů, například s indexy 1, 2, 3 atd.
+            const guestsCount = "{{ wd['number_of_guests'] }}"; // Počet hostů
+            for (let guestIndex = 0; guestIndex <= guestsCount; guestIndex++) {
+                checkAge(guestIndex); // Zavolá funkci pro každého hosta
+            }
+        });
+
+
+    </script>
+    
+     <script>
+        //In progess - spinner
+        const button = document.getElementById('odeslat');
+        const indikator = document.getElementById('indikator');
+
+        button.addEventListener('click', () => {
+        indikator.style.display = 'block';
+        // Zde by následoval váš kód pro odeslání dat
+        // ...
+        // Po dokončení odeslání:
+        indikator.style.display = 'none';
+        });
+    </script>
+
+    <p style="text-align: center; margin-top: 20px;">{{content['contact']}} <a href="mailto: booking@homevibes.cz"> booking@homevibes.cz </a></p>
+    <br>    
+
+    
+
+
+</body>
+</html>

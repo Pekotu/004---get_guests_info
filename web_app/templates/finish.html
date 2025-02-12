@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Data are saved</title>
+</head>
+<body>   
+    <!-- flask flash zpráva -->
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <ul>
+            {% for message in messages %}
+                <li style="width: 100%; color: green; font-size: 25px; text-align: center;">{{ message }}</li>
+            {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
+    <!-- flask flash zpráva -->
+    <p style="text-align: center; margin-top: 20px;">Pokud potřebujete pomoct, kontaktujte nás na <a href="mailto: booking@homevibes.cz"> booking@homevibes.cz</a> </p>
+</body>
+</html>

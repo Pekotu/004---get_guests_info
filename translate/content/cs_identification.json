@@ -1,0 +1,12 @@
+{
+    "title": "Zadejte telefonní číslo nebo email na který vám přišel tento odkaz",
+    "phone": "Telefonní číslo s mezinárodní předvolbou",
+    "or": "nebo",
+    "email": "Emailová adresa",
+    "submit": "Odeslat",
+    "kontakt": "Pokud potřebujete pomoct, kontaktujte nás na",
+    "blocked_page": "Příliš mnoho špatných pokusů. Tato stránka je zablokovaná na 20 minut. Zkuste to prosím později.",
+    "empty": "Minimálně jedno pole musí být vyplněno",
+    "wrong_value": "Vložené údaje neodpovídají těm na které jste obdrželi odkaz na tuto stránku",
+    "wrong_link": "Použili jste špatný odkaz. Použijte ten který jste obdrželi v emailu nebo sms"
+}

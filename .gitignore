@@ -1,0 +1,18 @@
+# Ignorovat všechny soubory s příponou .log
+*.log
+*.db
+
+# Ignorovat konkrétní soubor
+uplisting_key.txt
+sms_api_key.txt
+token_gmail_v1.pickle
+deepl_api_key.txt
+
+# Ignorovat celý adresář
+google_keys/
+email_pass/
+.venv/
+__pycache__/
+
+# Ignorovat všechny soubory s příponou .env
+*.env

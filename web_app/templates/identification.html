@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>identification</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    
+   
+    <style>
+        
+        form {
+            width: clamp(200px, 100%, 500px); /* Šířka divu */
+    
+            border: 1px solid #dfdfdf; /* Okraj pro lepší viditelnost */
+            overflow: hidden; /* Skryje obsah, který se nevejde */
+            word-wrap: break-word; /* Umožní zalomení slov */
+            padding: 20px; /* Vnitřní okraj */
+            box-sizing: border-box; /*Zahrne padding a border do celkové šířky a výšky */
+            margin: auto;
+            box-shadow: 1px 1px 20px rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+        
+        }
+
+        .logo {
+            display: block; 
+            margin-left: auto; 
+            margin-right: auto;
+            margin-bottom: -10px;
+            
+            width: clamp(100px, 20%, 200px); 
+            /* margin-top: 20px; 
+            margin-bottom: 5px; */
+            box-shadow: 1px 1px 20px rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            
+            background-color: white;
+        }
+        
+        h1 {
+            text-align: center;
+            display: flex;
+            color: #5e5d5d;
+            font-size: large;
+            margin-bottom: 30px;
+            text-decoration: underline;
+        }
+
+        
+       
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            align-items: left;
+            margin-bottom: 15px;
+        }
+        
+        .form-group-div {
+            display: block;
+            align-items: left;
+            margin-bottom: 3px;
+            margin-left: 0px;
+        }
+
+                
+        .form-group input {
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            width: 100%;
+            box-sizing: border-box; /*Zahrne padding a border do celkové šířky a výšky */
+            
+        }
+
+        .or{
+            width: 100%;
+            margin-top: 20px;
+            margin-bottom: 20px;
+            margin-left: auto;
+            margin-right: auto;
+            text-align: center;
+            font-size: 20px;
+        }
+        
+        button {
+            width: 100%;
+            padding: 15px;
+            font-size: 16px;
+            font-weight: bold;
+            background-color: #4CAF50;
+            /* background-color: #3c79cf; */
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 0 auto;
+            display: inline-block;
+        }
+
+        button:hover {
+            background-color: #36803a;
+            /* background-color: #c1303f; */
+        }
+    </style>
+</head>
+<body>   
+    
+    <img src="{{ url_for('static', filename='images/homevibes-logo5.png') }}" alt="homevibes.cz" class="logo">
+
+    <div class="table_div">
+
+    <form method="post" action="{{ url_for('identification_submit') }}">
+    <!-- <form id="identificationForm"> -->
+
+        <!-- <h1 >Enter the phone number or email you received this link to :</h1> -->
+        <h1>{{content['title']}}:</h1>
+        
+        <div class="form-group">
+            <div class="form-group-div">
+                <i class="fas fa-phone"></i>
+                <label for="telefon">{{content['phone']}}</label>
+            </div>
+
+            <input id="phone" class="input"  name="phone" type="tel" value="" placeholder="+xxx 123 456 479"/>
+
+        </div>
+
+        <!-- ---- -->
+        
+        
+        <!-- ---- -->
+        <p class="or">{{content['or']}}</p>
+
+        <div class="form-group">
+            <div class="form-group-div">
+                <i class="fas fa-envelope"></i>
+                <label for="email">{{content['email']}}</label>
+            </div>
+            <input type="email" class="input" id="email" name="email" placeholder="E-mail address" >
+        </div>
+        
+        <input type="hidden" name="booking_id" value={{booking_id}}>
+        
+        
+        <!-- <input type="hidden" name="ip_address" value="{{ ip }}"> -->
+
+        <!-- flask flash zpráva -->
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <ul>
+                {% for message in messages %}
+                    <li style="width: 100%; color: red; font-size: 20px; text-align: center;">{{ message }}</li>
+                {% endfor %}
+                </ul>
+            {% endif %}
+        {% endwith %}
+        <!-- flask flash zpráva -->
+
+        <div style="width: 100%; text-align: center; margin-top: 20px;">
+            <button type="submit">{{content['submit']}}</button>
+            <!-- <button type="submit">Submit</button>  -->
+        </div>
+
+        
+    </form>
+<p style="text-align: center; margin-top: 20px;">{{content['kontakt']}}<a href="mailto: booking@homevibes.cz"> booking@homevibes.cz </a></p>
+
+<script>
+    document.getElementById('identificationForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        const formData = new FormData(this);
+        const data = {};
+        formData.forEach((value, key) => {
+            data[key] = value;
+        });
+
+        fetch('/identification_submit', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        })
+        .then(response => response.json())
+        .then(data => console.log(data))
+        .catch(error => console.error('Error:', error));
+    });
+</script>
+
+
+
+
+</body>
+</html>

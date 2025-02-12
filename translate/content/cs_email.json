@@ -1,0 +1,4 @@
+{ 
+    "subject": "Online check-in - {xapartmentx}",
+    "text": "Dobrý den {xnamex},<br><br> děkuji za rezervaci ubytování v \"{xapartmentx}\"  v termínu  {xdate_startx} - {xdate_endx}. <br> Použijte tento odkaz {xlinkx} pro online check-in.<br><br> Děkuji a přeji hezký den.<br><br>Jan Pokorný<br>www.HomeVibes.cz"
+}

@@ -1,0 +1,4 @@
+{
+    "subject": "Online check-in - {xapartmentx}",
+    "text": "Hello {xnamex},<br><br> thank you for booking accommodation in \"{xapartmentx}\" in the term {xdate_startx} - {xdate_endx}. <br> Use this link {xlinkx} for online check-in.<br><br> Thank you and have a nice day.<br><br>Jan Pokorný<br>www.HomeVibes.cz"
+}
