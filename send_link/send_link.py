@@ -70,7 +70,7 @@ def send_link(record):
 
             #-------
 
-            link = f'https://hv.kopeckysolution.com/identification/{booking_id}'
+            link = f'https://api.homevibes.cz/identification/{booking_id}'
 
             
             content = translate_content("email", webhook, language )

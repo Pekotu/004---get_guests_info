@@ -230,8 +230,8 @@ def wrong_link(webhook):
 
 ###############################
 if __name__ == '__main__':
-    
-    load_apartment_name(2)
+    pass
+    #load_apartment_name(2)
 
 
 

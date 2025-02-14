@@ -38,7 +38,8 @@ def send_sms(number, msg):
         return e
     
 ###############################
-#if __name__ == '__main__':
+if __name__ == '__main__':
+	pass
 #    response = send_sms('00 420 724-928(604)  ', 'https://pkopecky.pythonanywhere.com/identification/1', 'Kopecký', 'Apartment 1')
 
 #    print(response.text)pip install requests

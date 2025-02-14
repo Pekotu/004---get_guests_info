@@ -1,0 +1,258 @@
+kroky 1-9 jsou hotové
+
+následující potřebují admin přístup
+---------------------------------------------------------------------------------
+10. 
+vytvoření souboru který bude automaticky startovat gunicorn při resetu serveru
+
+### uprav jmeno aplikace v nazvu souboru
+sudo nano /etc/systemd/system/get_guest_info.service
+
+### uprav cesty podle aktualni aplikace
+### uprav jmeno uzivatele 
+
+------------SOUBOR-----------------
+------------SOUBOR-----------------
+------------SOUBOR-----------------
+
+[Unit]
+Description=Gunicorn instance to serve flask application
+After=network.target
+
+[Service]
+User=peta
+Group=www-data
+WorkingDirectory=/home/peta/get_guest_info/
+Environment="PATH=/home/peta/get_guest_info/venv/bin"
+ExecStart=/home/peta/get_guest_info/venv/bin/gunicorn --config gunicorn_config.py wsgi:app
+
+[Install]
+WantedBy=multi-user.target
+
+------------konec-----------------
+------------konec-----------------
+------------konec-----------------
+
+
+---------------------------------------------------------------------------------
+11.
+nastartuj a povol právě vytvořenou službu
+
+sudo systemctl start get_guest_info.service
+sudo systemctl enable get_guest_info.service
+
+---------------------------------------------------------------------------------
+12.
+zkontroluj zda servis běží
+
+sudo systemctl status get_guest_info.service
+
+---------------------------------------------------------------------------------
+13.
+Konfigurace Apache2 jako reverse proxy
+
+vytvoř soubor pro konfiguraci
+sudo nano /etc/apache2/sites-available/get_guest_info.conf
+
+
+### uprav cesty, ServerAdmin, ServerName, ServerAlis, 
+
+------------SOUBOR-----------------
+------------SOUBOR-----------------
+------------SOUBOR-----------------
+
+<VirtualHost *:80>
+        ServerAdmin petr@kopeckysolution.com
+        ServerName homevibes.cz
+        ServerAlias www.homevibes.cz
+
+        ErrorLog ${APACHE_LOG_DIR}/get_guest_info-error.log
+        CustomLog ${APACHE_LOG_DIR}/get_guest_info-access.log combined
+
+        <Location />
+                ProxyPass unix:/home/peta/get_guest_info/get_guest_info.sock|http://127.0.0.1/
+                ProxyPassReverse unix:/home/peta/get_guest_info/get_guest_info.sock|http://127.0.0.1/
+	</Location>
+</VirtualHost>
+
+<VirtualHost *:443>
+	ServerAdmin petr@kopeckysolution.com
+	ServerName homevibes.cz
+	ServerAlias www.homevibes.cz
+
+	# Cesta k SSL certifikátům
+	SSLEngine on
+	SSLCertificateFile '/etc/letsencrypt/live/homevibes.cz/fullchain.pem'
+	SSLCertificateKeyFile '/etc/letsencrypt/live/homevibes.cz/privkey.pem'
+
+	ErrorLog ${APACHE_LOG_DIR}/get_guest_info-error.log
+	CustomLog ${APACHE_LOG_DIR}/get_guest_info-access.log combined
+
+	<Location />
+        	ProxyPass unix:/home/peta/get_guest_info/get_guest_info.sock|http://127.0.0.1/
+        	ProxyPassReverse unix:/home/peta/get_guest_info/get_guest_info.sock|http://127.0.0.1/
+	</Location>
+</VirtualHost>
+
+------------konec-----------------
+------------konec-----------------
+------------konec-----------------
+
+Varianta s wordpress:
+
+------------SOUBOR-----------------
+------------SOUBOR-----------------
+------------SOUBOR-----------------
+<VirtualHost *:80>
+        ServerAdmin petr@kopeckysolution.com
+        ServerName homevibes.cz
+        ServerAlias www.homevibes.cz
+
+        ErrorLog ${APACHE_LOG_DIR}/get_guest_info-error.log
+        CustomLog ${APACHE_LOG_DIR}/get_guest_info-access.log combined
+
+        <Location /check-in/>
+                ProxyPass unix:/home/peta/get_guest_info/get_guest_info.sock|http://127.0.0.1/
+                ProxyPassReverse unix:/home/peta/get_guest_info/get_guest_info.sock|http://127.0.0.1/
+	</Location>
+</VirtualHost>
+
+<VirtualHost *:443>
+	ServerAdmin petr@kopeckysolution.com
+	ServerName homevibes.cz
+	ServerAlias www.homevibes.cz
+
+	# Cesta k SSL certifikátům
+	SSLEngine on
+	SSLCertificateFile '/etc/letsencrypt/live/homevibes.cz/fullchain.pem'
+	SSLCertificateKeyFile '/etc/letsencrypt/live/homevibes.cz/privkey.pem'
+
+	ErrorLog ${APACHE_LOG_DIR}/get_guest_info-error.log
+	CustomLog ${APACHE_LOG_DIR}/get_guest_info-access.log combined
+
+	<Location /check-in/>
+        	ProxyPass unix:/home/peta/get_guest_info/get_guest_info.sock|http://127.0.0.1/
+        	ProxyPassReverse unix:/home/peta/get_guest_info/get_guest_info.sock|http://127.0.0.1/
+	</Location>
+</VirtualHost>
+
+
+
+------------konec-----------------
+------------konec-----------------
+------------konec-----------------
+
+
+---------------------------------------------------------------------------------
+14.
+Nyní povol vytvořenou konfiguraci
+
+sudo a2ensite get_guest_info.conf
+
+---------------------------------------------------------------------------------
+15.
+resetovani Apache
+
+sudo systemctl reload apache2
+
+---------------------------------------------------------------------------------
+16.
+v souboru /etc/apache2apache2.conf by mělo být: 
+
+ServerName homevibes.cz
+
+---------------------------------------------------------------------------------
+17.
+pravděpodobně bude zapotřebí dát práva uživateli pod kterým běží flask aplikace do složky kde je uložena aplikace
+
+Nastavení vlastníka složky aplikace
+Předpokládejme, že Flask aplikace je ve složce /home/get_gest_info/.
+
+Změňte vlastníka složky na uživatele, pod kterým běží server (např. www-data):
+sudo chown -R www-data:www-data /home/get_gest_info
+
+Umožněte čtení a zápis pro vlastníka a skupinu:
+sudo chmod -R 775 /home/get_gest_info
+
+A pokud chcete, aby všechny nové soubory ve složce automaticky dědily správná oprávnění, nastavte setgid bit:
+sudo chmod g+s /home//get_gest_info
+ 
+Pokud chcete mít přístup k souborům i jako uživatel peta, přidejte ho do skupiny www-data:
+sudo usermod -aG www-data peta
+
+Poté se odhlaste a znovu přihlaste, aby se změny projevily.
+
+Zkontrolujte oprávnění:
+ls -ld /home/get_gest_info
+
+Mělo by to vypadat takto:
+drwxrwxr-x 10 peta www-data 4096 Feb 7 16:30 /home/get_gest_info
+
+Tímto způsobem zajistíte, že Flask bude mít čtení i zápis do složky aplikace a zároveň si ponecháte kontrolu nad soubory.
+
+---------------------------------------------------------------------------------
+18. reset gunicorn
+sudo systemctl restart gunicorn
+---------------------------------------------------------------------------------
+
+
+
+
+---------------------------------------------------------------------------------
+--------Send Link-------------------------------------------------------------------------
+--------Send Link-------------------------------------------------------------------------
+--------Send Link-------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+
+
+vytvoření souboru který zajistí že aplikace sendlink.py se bude sama spouště pokud nepoběží
+
+101. 
+Vytvoření systemd služby
+Nejprve vytvořte systemd službu pro aplikaci.
+
+sudo nano /etc/systemd/system/sendlink.service
+
+####Obsah souboru (přizpůsobte cestu k aplikaci):
+
+------------SOUBOR-----------------
+------------SOUBOR-----------------
+------------SOUBOR-----------------
+
+Description=Application sendlink
+After=network.target
+
+[Service]
+User=peta
+Group=www-data
+WorkingDirectory=/home/peta/sendlink
+ExecStart=/home/peta/sendlink/venv/bin/python /home/peta/sendlink/send_link.py
+Restart=always
+RestartSec=5
+KillMode=process
+StandardOutput=append:/home/peta/sendlink/logs/sendlink.log
+StandardError=append:/home/peta/sendlink/logs/sendlink-error.log
+
+[Install]
+WantedBy=multi-user.target
+
+------------konec-----------------
+------------konec-----------------
+------------konec-----------------
+
+---------------------------------------------------------------------------------
+102.
+Aktivace služby
+Po vytvoření souboru spusťte následující příkazy:
+
+🔹 Načtení změn systemd:
+sudo systemctl daemon-reload
+
+🔹 Spuštění služby:
+sudo systemctl start sendlink
+
+🔹 Povolení automatického startu při bootování:
+sudo systemctl enable sendlink
+
+🔹 Kontrola, zda běží:
+sudo systemctl status sendlink

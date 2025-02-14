@@ -16,7 +16,7 @@
 # You should discard all webhooks with an earlier timestamp to prevent writing outdated data.
 
 from flask import Flask, request, jsonify
-import logging
+
 import os
 from pathlib import Path
 
@@ -46,6 +46,7 @@ app.secret_key = 'tv$$$ůj_ta%%323jný_klíč'  # Nutné pro flash zprávy
 register_identification_routes(app)
 register_form_routes(app)
 
+log_to_file(str(app.url_map))
 
 ################################
 # Receive webhook
@@ -94,7 +95,8 @@ def webhook():
 
 
     except Exception as e:
-        logging.error(f"exception during webhook receiving: {e}")
+        log_to_file(f"exception during webhook receiving: {e}")
+        
         return jsonify({'message': 'error'}), 500
 
 ###############################
@@ -110,6 +112,13 @@ def load_apartment_name(property_name):
             if row[0] == property_name:
                 return row[1].replace("\n", "")        
     return 'Apartmán'
+
+################################
+# TEST
+@app.route('/test', methods=['GET'])
+def home():
+    #log_to_file("home")
+    return "test ok"
 
             
 ###############################

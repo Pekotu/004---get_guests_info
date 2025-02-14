@@ -14,8 +14,6 @@ def load_api_key():
 # Registering of endpoint for webhooks in Uplisting API 
 def registering_of_endpoint_for_webhooks():
 
-    
-
     url = "https://connect.uplisting.io/hooks"
     headers = {
         "Content-Type": "application/json",
@@ -23,7 +21,7 @@ def registering_of_endpoint_for_webhooks():
     }
 
     data = {
-        "target_url": "https://www.homevibes.cz/webhooks",
+        "target_url": "https://api.homevibes.cz/webhooks",
         "event": "booking_created"
     }
 
@@ -33,9 +31,9 @@ def registering_of_endpoint_for_webhooks():
     print("Response text:", response.text)
 
 
-    # Last Output on 11.2.2025:
-    # Status code: 201
-    # Response text: {"id":85549}
+    # Last Output on 14.2.2025:
+    #Status code: 201
+    #Response text: {"id":85597}
 
 #########################################
 def convert_api_key_to_base64():
@@ -89,9 +87,9 @@ def get_list_of_active_endpoints():
    
   
 #########################################
-def remove_endpoint():
+def remove_endpoint(id):
 
-    id="83814"
+    #id="83814"
 
     url = f"https://connect.uplisting.io/hooks/{id}"
 
@@ -112,5 +110,5 @@ if __name__ == '__main__':
     #registering_of_endpoint_for_webhooks()
     #convert_api_key_to_base64()
     #verify_api_key()
-    #remove_endpoint()
+    #remove_endpoint(85552)
     get_list_of_active_endpoints()

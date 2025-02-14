@@ -12,6 +12,8 @@ project_folder = Path(__file__).parent.parent.resolve()
 sys.path.append(os.path.abspath(f"{project_folder}/"))
 from web_app.log_to_file import log_to_file
 
+# log_to_file(f"translate.py: {project_folder=}")
+# log_to_file(f"{project_folder=}")
 
 
 
@@ -95,7 +97,10 @@ def translate_content(content_name, webhook, language = 'CS' ):
     if language != 'CS' and need_translate == True:
         
         # authentication key for DeepL
-        with open("translate_api_key/deepl_api_ket.txt", mode='r', encoding='utf-8') as f:
+        
+        log_to_file(f"{project_folder}/translate/translate_api_key/deepl_api_key.txt")
+
+        with open(f"{project_folder}/translate/translate_api_key/deepl_api_key.txt", mode='r', encoding='utf-8') as f:
             auth_key = f.read().replace('\n', '')
 
         # three attempts to connect with DeepL
@@ -155,7 +160,8 @@ def translate_content(content_name, webhook, language = 'CS' ):
 
 ###############################
 
-# if __name__ == "__main__":
+if __name__ == "__main__":
+    pass
 #     get_data_paths()
 #     content_name = 'email'
 #     phone_number = '+1 777 123 456'

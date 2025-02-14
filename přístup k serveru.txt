@@ -1,0 +1,87 @@
+Dobrý den pane Kopecký,
+
+hosting homevibes si zřejmě připravoval pan Pokorný sám, jelikož je web již funkční. Přidávám tedy dalšího FTP a SSH usera pro daný hosting viz níže.
+
+
+
+FTPS na portu 21
+
+server12.mediapartner.cz
+
+ftp user: homevibes_prg
+
+pass: HfZLV2_rqqgG
+
+
+
+SSH na portu 2212
+
+ssh user: sshu_homevibes
+------------------------------------------
+pass: hCreg_87XG
+
+https://www.youtube.com/watch?v=JHYbu50_uNE
+Powershell:
+přihlášení do SSH
+ssh sshu_homevibes@server12.mediapartner.cz -p 2212
+----------------------------------------------------
+
+
+Po loginu je dostupné php i python
+
+sshu_homevibes@homevibes.cz:~/web$ python3 -V
+Python 3.9.2
+
+sshu_homevibes@homevibes.cz:~/web$ php -v
+PHP 7.4.33 (cli) (built: Sep 27 2024 04:07:09) ( NTS )
+
+
+
+---
+S pozdravem / Kind regards,
+
+
+Petr Karbulka
+Hosting - support
+			
+Tel: +420 607 20 42 07
+Email: hosting@faustagency.com
+Web: www.faustagency.com
+
+
+cd get_guest_data/receive_webhooks
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+
+export FLASK_APP=myapp.py
+rm -rf název_složky
+
+-------------------------
+Pro api.homevibes.cz nový ssh user
+ssh sshu_homevibes2@server12.mediapartner.cz -p 2212
+
+HW2#zxWsLfWs
+
+cd web/get_guest_data/receive_webhooks
+mod_wsgi-express start-server wsgi.py --processes 4
+
+
+26,6 MB (27 923 874 B)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

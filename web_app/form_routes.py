@@ -43,13 +43,26 @@ def register_form_routes(app):
     def submit_form():
 
         get_data_paths()
+        log_to_file('route_form: submit_form')
         
         form_data = request.form.to_dict()
+        
         log_to_file(f'{form_data=}')
 
+        content = translate_content('form', webhook={} , language='cs' )
+
+        # if form_data == None:
+        #     flash(content['error']) 
+        #     return render_template('error.html')
+
         webhook_data = form_data.get('webhook_data')
-        webhook_data = ast.literal_eval(webhook_data)
-        
+        if webhook_data != None:
+            webhook_data = ast.literal_eval(webhook_data)
+        else:
+            return
+            # flash(content['error']) 
+            # return render_template('error.html')
+
         language = get_record_from_db(webhook_data['id']).get('language')
 
         content = translate_content('form', webhook= webhook_data, language=language )
@@ -243,4 +256,5 @@ def get_data_paths():
     
     return
 
-
+if __name__ == "__main__":
+    pass

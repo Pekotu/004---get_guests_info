@@ -5,7 +5,7 @@ import time
 
 import sys
 import os
-
+from log_to_file import log_to_file
 
 
 project_folder = Path(__file__).parent.parent.resolve() #cesta k projektu končí ve složce "004 - PYTHONANYWHERE
@@ -21,7 +21,21 @@ from translate.pk_translate import *
 def get_db_path():
 
     project_folder = Path(__file__).parent.parent.resolve()
-    db_path = f"{project_folder}\\data\\app_data.db"
+    db_path = f"{project_folder}/data/app_data.db"
+    
+    log_to_file(f"db_path: {db_path}")
+
+
+    #--conn = sqlite3.connect(db_path)
+    # cursor = conn.cursor()
+    # cursor.execute("SELECT name FROM sqlite_master WHERE type='table';")
+    # tables = cursor.fetchall()
+    
+    # conn.close()
+    
+    # log_to_file(f"tables: {tables}")---------
+    # 
+    
     return db_path
     
 
@@ -473,14 +487,14 @@ def get_all_records_from_ip_tbl():
 ############################################
 
 if __name__ == '__main__':
-
+    pass
     #create_table_webhooks_tbl()
     #create_table_ip_addresses_tbl()
-    create_table_blocked_ip_tbl()
+    #create_table_blocked_ip_tbl()
 
     #delete_all_webhooks_from_db()
 
-    #get_all_table_names()
+    get_all_table_names()
     
     # create_db()
 
@@ -533,13 +547,13 @@ if __name__ == '__main__':
 
     #     print("----------------------")
 
-    r = get_record_from_db(2)
-    print(r.get('language'))
+    # r = get_record_from_db(2)
+    # print(r.get('language'))
 
-    change_language_in_db(2, "EN-GB")
+    # change_language_in_db(2, "EN-GB")
 
-    r = get_record_from_db(2)
-    print(r.get('language'))
+    # r = get_record_from_db(2)
+    # print(r.get('language'))
     
     
     #create_table_ip_addresses_tbl()
