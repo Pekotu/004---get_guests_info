@@ -22,20 +22,7 @@ def get_db_path():
 
     project_folder = Path(__file__).parent.parent.resolve()
     db_path = f"{project_folder}/data/app_data.db"
-    
-    log_to_file(f"db_path: {db_path}")
-
-
-    #--conn = sqlite3.connect(db_path)
-    # cursor = conn.cursor()
-    # cursor.execute("SELECT name FROM sqlite_master WHERE type='table';")
-    # tables = cursor.fetchall()
-    
-    # conn.close()
-    
-    # log_to_file(f"tables: {tables}")---------
-    # 
-    
+   
     return db_path
     
 
@@ -58,37 +45,40 @@ def create_table_webhooks_tbl():
         CREATE TABLE IF NOT EXISTS webhooks_tbl (
 
             id INTEGER PRIMARY KEY,
-
             booking_id INTEGER,
-
             webhook TEXT,
-
             timestamp TIMESTAMP,
-
             received_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-
             phone TEXT,
-
             email TEXT,
-
             language TEXT,
+            check_in TEXT,
+            check_out TEXT,
 
-            link_send_email_at TIMESTAMP,
+            booking_send_email_at TIMESTAMP,
+            booking_send_sms_at TIMESTAMP,
+            booking_send_email_error_at TIMESTAMP,       
+            booking_send_sms_error_at TIMESTAMP,
+            booking_send_email_error_counter INTEGER DEFAULT 0,
+            booking_send_sms_error_counter INTEGER DEFAULT 0,
 
-            link_send_sms_at TIMESTAMP,
+            arrival_send_email_at TIMESTAMP,
+            arrival_send_sms_at TIMESTAMP,
+            arrival_send_email_error_at TIMESTAMP,       
+            arrival_send_sms_error_at TIMESTAMP,
+            arrival_send_email_error_counter INTEGER DEFAULT 0,
+            arrival_send_sms_error_counter INTEGER DEFAULT 0,
 
-            link_send_email_error_at TIMESTAMP,       
+            departure_send_email_at TIMESTAMP,
+            departure_send_sms_at TIMESTAMP,
+            departure_send_email_error_at TIMESTAMP,       
+            departure_send_sms_error_at TIMESTAMP,
+            departure_send_email_error_counter INTEGER DEFAULT 0,
+            departure_send_sms_error_counter INTEGER DEFAULT 0,
 
-            link_send_sms_error_at TIMESTAMP,
-
-            link_send_email_error_counter INTEGER DEFAULT 0,
-
-            link_send_sms_error_counter INTEGER DEFAULT 0,       
-
+            sent_info_to_owner_at TIMESTAMP,       
             data_from_form TEXT,
-
             data_from_form_at TIMESTAMP,
-
             form_data TEXT
             )
     ''')
@@ -222,22 +212,27 @@ def add_blocked_ip_to_db(ip_address, blocked_till=None):
 ############################################
 
 def is_ip_blocked(ip_address):
+    # return time when the IP address will be unblocked or False if the IP address is not blocked
 
     conn = sqlite3.connect(get_db_path())
     cursor = conn.cursor()
     
     cursor.execute('''
-            SELECT COUNT(*) FROM blocked_ip_addresses_tbl
+            SELECT blocked_till FROM blocked_ip_addresses_tbl
             WHERE ip_address = ? AND blocked_till > datetime('now')
-        ''', (ip_address,))
-        
-    count = cursor.fetchone()[0]
+        ''', (ip_address,))        
+    
+    list_of_blocked_till = cursor.fetchall()
     conn.close()
-    if count > 0:
-        return True
+
+    if len(list_of_blocked_till) > 0:
+        value = str(list_of_blocked_till[-1]).replace('(', '').replace(')', '').replace(',', '') 
+        return value  #return the last blocked time
+        log_to_file(f"IP address {ip_address} is blocked till {list_of_blocked_till[-1]}")
+    
     else:
         return False
-
+    
 
 ############################################
 
@@ -261,7 +256,8 @@ def get_blocked_ip():
 # Add new webhook to the database if is fresher than the curent one with the same ID or if there is no webhook with the same ID
 
 def add_webhook_to_db(webhook):
-
+    guest_phone = webhook.get('guest_phone').replace(" ", "")
+    guest_email = webhook.get('guest_email').replace(" ", "")
 
     try:    
         conn = sqlite3.connect(get_db_path())
@@ -271,10 +267,10 @@ def add_webhook_to_db(webhook):
         def insert_webhook(webhook):
             # insert webhook
             cursor.execute('''
-                INSERT INTO webhooks_tbl(booking_id, webhook, timestamp, received_at, phone, email, language)
-                VALUES(?,?,?,?,?,?,?)
+                INSERT INTO webhooks_tbl(booking_id, webhook, timestamp, received_at, phone, email, language, check_in, check_out)
+                VALUES(?,?,?,?,?,?,?,?,?)
 
-            ''', (webhook.get('id'), str(webhook), webhook.get('timestamp'), str(time.strftime("%Y-%m-%d %H:%M:%S", time.gmtime())), webhook.get('guest_phone'), webhook.get('guest_email'), select_language_by_phone_number(webhook.get("guest_phone")) ))
+            ''', (webhook.get('id'), str(webhook), webhook.get('timestamp'), str(time.strftime("%Y-%m-%d %H:%M:%S", time.gmtime())), guest_phone, guest_email, select_language_by_phone_number(webhook.get("guest_phone")), webhook.get('check_in'), webhook.get('check_out')))
         ##########
 
         # if in db is the webhook with the same ID and with timestamp before timestamp in received webhook, delete the old webhook and save the new one else keep the old one
@@ -422,13 +418,13 @@ def delete_all_webhooks_from_db():
 
 # Test whether link was sent to email 
 
-def was_send_link_to_email(email, booking_id):
+def was_send_booking_to_email(email, booking_id):
     conn = sqlite3.connect(get_db_path())
     cursor = conn.cursor()
     
     cursor.execute('''
-        SELECT link_send_email_at FROM webhooks_tbl 
-        WHERE email = ? AND booking_id = ? AND link_send_email_at IS NOT NULL
+        SELECT booking_send_email_at FROM webhooks_tbl 
+        WHERE email = ? AND booking_id = ? AND booking_send_email_at IS NOT NULL
     ''', (email, booking_id))
  
 
@@ -445,13 +441,13 @@ def was_send_link_to_email(email, booking_id):
 
 # Test whether link was sent to phone 
 
-def was_send_link_to_phone(phone, booking_id):
+def was_send_booking_to_phone(phone, booking_id):
     conn = sqlite3.connect(get_db_path())
     cursor = conn.cursor()
     
     cursor.execute('''
-        SELECT link_send_sms_at FROM webhooks_tbl 
-        WHERE phone = ? AND booking_id = ? AND link_send_sms_at IS NOT NULL
+        SELECT booking_send_sms_at FROM webhooks_tbl 
+        WHERE phone = ? AND booking_id = ? AND booking_send_sms_at IS NOT NULL
     ''', (phone, booking_id))
 
     records = cursor.fetchall()
@@ -488,28 +484,25 @@ def get_all_records_from_ip_tbl():
 
 if __name__ == '__main__':
     pass
-    #create_table_webhooks_tbl()
+    create_table_webhooks_tbl()
     #create_table_ip_addresses_tbl()
     #create_table_blocked_ip_tbl()
 
     #delete_all_webhooks_from_db()
 
-    get_all_table_names()
+    #get_all_table_names()
     
-    # create_db()
 
 
-    # i = 2000
+
+    hook = {'id': '', 'accommodation_management_fee': 20.0, 'accommodation_total': 362.45, 'arrival_time': '15:00:00', 'automated_messages_enabled': True, 'automated_reviews_enabled': False, 'booked_at': '2021-11-26T11:19:59Z', 'channel': 'airbnb_official', 'check_in': '2021-12-03', 'check_out': '2021-12-05', 'cleaning_fee': 40.0, 'cleaning_management_fee': 4.0, 'commission': 14.0, 'currency': 'GBP', 'departure_time': '11:00:00', 'direct': False, 'external_reservation_id': 'ABC2DEF3YZ', 'guest_email': 'kopeckysolution@seznam.cz', 'guest_name': 'Jon Snow', 'guest_phone': '+420724928604', 'manually_moved': False, 'multi_unit_id': None, 'multi_unit_name': None, 'note': 'Bringing the dragon', 'number_of_guests': 3, 'number_of_nights': 7, 'other_charges': None, 'preferred_guest_name': 'King of the North', 'property_id': 2, 'property_name': 'Mi Casa', 'source': None, 'status': 'confirmed', 'timestamp': '2021-11-26T11:20:00Z', 'total_management_fee': 48, 'total_payout': 388, 'webhook_received_at': '2024-11-18 18:35:20', 'my_status': 'received'}
 
 
-    # hook = {'id': i, 'accommodation_management_fee': 20.0, 'accommodation_total': 362.45, 'arrival_time': '15:00:00', 'automated_messages_enabled': True, 'automated_reviews_enabled': False, 'booked_at': '2021-11-26T11:19:59Z', 'channel': 'airbnb_official', 'check_in': '2021-12-03', 'check_out': '2021-12-05', 'cleaning_fee': 40.0, 'cleaning_management_fee': 4.0, 'commission': 14.0, 'currency': 'GBP', 'departure_time': '11:00:00', 'direct': False, 'external_reservation_id': 'ABC2DEF3YZ', 'guest_email': 'kopeckysolution@seznam.cz', 'guest_name': 'Jon Snow', 'guest_phone': '+420724928604', 'manually_moved': False, 'multi_unit_id': None, 'multi_unit_name': None, 'note': 'Bringing the dragon', 'number_of_guests': 3, 'number_of_nights': 7, 'other_charges': None, 'preferred_guest_name': 'King of the North', 'property_id': 2, 'property_name': 'Mi Casa', 'source': None, 'status': 'confirmed', 'timestamp': '2021-11-26T11:20:00Z', 'total_management_fee': 48, 'total_payout': 388, 'webhook_received_at': '2024-11-18 18:35:20', 'my_status': 'received'}
+    for i in range(1, 2):
 
+        hook['id'] = i
 
-    # for i in range(2000, 2007):
-
-    #     hook['id'] = i
-
-    #     add_webhook_to_db(hook)
+        add_webhook_to_db(hook)
     
 
     # all_webhooks = return_all_webhooks()
@@ -561,6 +554,8 @@ if __name__ == '__main__':
     #test()
     # a = get_blocked_ip()
     # print(a)
+
+    
 
     
 

@@ -1,0 +1,4 @@
+{ 
+    "subject": "HomeVibes.cz - Rezervace - {xapartmentx}",
+    "text": "Dobrý den {xnamex},<br> děkujeme, že jste si rezervovali náš apartmán \"{xapartmentx}\". Těšíme se na Vás {xdate_startx}.<br><br>Pro dokončení rezervace použijte tento odkaz {xlinkx}<br><br>Všechny informace najdete zde: {xgeneral_info_linkx}<br>V den příjezdu pošleme instrukce pro check-in.<br><br> Děkuji<br><br>Roxy & Jan<br>+420 608 696 843 (CZ, UA, RU)<br>+420 720 136 957 (CZ, EN, RU, UA)<br>www.homevibes.cz"
+}

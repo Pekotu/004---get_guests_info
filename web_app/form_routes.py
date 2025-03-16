@@ -41,87 +41,101 @@ def register_form_routes(app):
     form_data = {}
     @app.route('/', methods=["GET", "POST"])
     def submit_form():
-
-        get_data_paths()
-        log_to_file('route_form: submit_form')
-        
-        form_data = request.form.to_dict()
-        
-        log_to_file(f'{form_data=}')
-
-        content = translate_content('form', webhook={} , language='cs' )
-
-        # if form_data == None:
-        #     flash(content['error']) 
-        #     return render_template('error.html')
-
-        webhook_data = form_data.get('webhook_data')
-        if webhook_data != None:
-            webhook_data = ast.literal_eval(webhook_data)
-        else:
-            return
-            # flash(content['error']) 
-            # return render_template('error.html')
-
-        language = get_record_from_db(webhook_data['id']).get('language')
-
-        content = translate_content('form', webhook= webhook_data, language=language )
-        # Load the content of the page and translate it into the language from the webhook
-
-        record = get_record_from_db(webhook_data['id'])
-        #try:
-        if form_data.get('id') != None:
-            ##
-            # Validate received data from form
-            error_message = ""
-
-            #load previous errors from form
-            errors_from_form = record.get('errors_from_form', {}) 
-            if errors_from_form != {}:
-                errors_from_form = ast.literal_eval(errors_in_form)
-
-            # Check validity of data from form
-            error_message, errors_from_form = check_validity_of_data(form_data, content, errors_from_form)
+        if request.method == 'POST':
+            get_data_paths()
+            log_to_file(f'submit_form')
             
-            # Save summary errors from form to database
-            form_data['errors_from_form'] = errors_from_form
-            if error_message:    
-                return render_template('form.html', wd = webhook_data, error_message = error_message, form_data = form_data, content = content)
+            form_data = request.form.to_dict()
+            booking_id = form_data.get('id')
+            log_to_file(f'submit_form - {booking_id=} - {form_data=}')
 
-            # add timestampu when data were stored
-            form_data['form_data_stored_at'] = time.strftime("%d-%m-%Y %H:%M:%S")  
+            content = translate_content('form', webhook={} , language='cs' )
 
-            # Counting how many times the form data has been saved for one booking_id 
-            scounter = int(form_data.get('counter_of_saving',0) )
+            # if form_data == None:
+            #     flash(content['error']) 
+            #     return render_template('error.html')
 
-            form_data['counter_of_saving'] = scounter + 1
+            webhook_data = form_data.get('webhook_data')
+            if webhook_data != None:
+                webhook_data = ast.literal_eval(webhook_data)
+            else:
+                return
+                # flash(content['error']) 
+                # return render_template('error.html')
 
-            #removal of webhook_data from form_data
-            form_data.pop('webhook_data', None)
+            language = get_record_from_db(webhook_data['id']).get('language')
 
-        
-            # Save data from form to Database
-            add_data_from_form_to_db(form_data.get('id'), form_data)
+            content = translate_content('form', webhook= webhook_data, language=language )
+            # Load the content of the page and translate it into the language from the webhook
 
-            # Save data from form to Google Sheet
-            form_data['apartman'] = webhook_data['property_id']
-            form_data['check_in'] = webhook_data['check_in']
-            form_data['check_out'] = webhook_data['check_out']
-            form_data['channel'] = webhook_data['channel']
-            form_data['booked_at'] = webhook_data['booked_at']
-            form_data['booked_by'] = webhook_data['guest_name']
-            form_data['booked_by_phone'] = webhook_data['guest_phone']
-            form_data['booked_by_email'] = webhook_data['guest_email']
+            record = get_record_from_db(webhook_data['id'])
+            #try:
+            if form_data.get('id') != None:
+                ##
+                # Validate received data from form
+                error_message = ""
+
+                #load previous errors from form
+                data_from_form = record.get('data_from_form',{})
+                if not data_from_form:
+                    data_from_form = {}
+
+                elif data_from_form != {}:
+                    data_from_form = ast.literal_eval(data_from_form)
+
+                errors_from_form = data_from_form.get('errors_from_form', {}) 
+                
+
+                # Check validity of data from form
+                error_message, errors_from_form = check_validity_of_data(form_data, content, errors_from_form)
+                
+                log_to_file(f'submit_form - {booking_id=} - {error_message=}, {errors_from_form=}')
+
+                # Save summary errors from form to database
+                form_data['errors_from_form'] = errors_from_form
+                add_data_from_form_to_db(form_data.get('id'), form_data)
+
+                # If there are errors in the form, return the form with the error message
+                if error_message:    
+                    return render_template('form.html', wd = webhook_data, error_message = error_message, form_data = form_data, content = content)
+
+                # add timestampu when data were stored
+                form_data['form_data_stored_at'] = time.strftime("%d-%m-%Y %H:%M:%S")  
+
+                # Counting how many times the form data has been saved for one booking_id 
+                scounter = int(form_data.get('counter_of_saving',0) )
+
+                form_data['counter_of_saving'] = scounter + 1
+
+                #removal of webhook_data from form_data
+                form_data.pop('webhook_data', None)
+
             
-            result = write_data_to_gsheet(form_data, errors_from_form)
+                # Save data from form to Database
+                add_data_from_form_to_db(form_data.get('id'), form_data)
+                log_to_file(f'submit_form - stored in DB -  {booking_id=} - {form_data=}')
 
-            #print(result)
-            flash(content['saved'])
-            return render_template('finish.html')
+                # Save data from form to Google Sheet
+                form_data['apartman'] = webhook_data['property_name']
+                form_data['check_in'] = webhook_data['check_in']
+                form_data['check_out'] = webhook_data['check_out']
+                form_data['channel'] = webhook_data['channel']
+                form_data['booked_at'] = webhook_data['booked_at']
+                form_data['booked_by'] = webhook_data['guest_name']
+                form_data['booked_by_phone'] = webhook_data['guest_phone']
+                form_data['booked_by_email'] = webhook_data['guest_email']
+                
+                result = write_data_to_gsheet(form_data, errors_from_form)
 
-        else:
-            flash(content['error']) 
-            return render_template('error.html')
+                #print(result)
+                log_to_file(f'submit_form - {booking_id=} - Finish')
+                flash(content['saved'])
+                return render_template('finish.html')
+
+            else:
+                log_to_file(f'submit_form - {booking_id=} - error')
+                flash(content['error']) 
+                return render_template('error.html')
 
 
 

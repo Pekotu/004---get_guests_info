@@ -33,6 +33,8 @@ from identification_routes import *
 from form_routes import *
 from log_to_file import log_to_file
 import ast
+from load_config_ini import load_config_ini
+
 
 
 
@@ -46,72 +48,102 @@ app.secret_key = 'tv$$$ůj_ta%%323jný_klíč'  # Nutné pro flash zprávy
 register_identification_routes(app)
 register_form_routes(app)
 
-log_to_file(str(app.url_map))
+#log_to_file(str(app.url_map))
 
 ################################
 # Receive webhook
 @app.route('/webhooks', methods=['POST'])
 def webhook():
-    log_to_file("webhook received")
+    log_to_file(f"webhook received")
     try:
         if request.method == 'POST':
             
             received_data = request.json
            
-            log_to_file(f'{received_data=}')
-            #Test received data:
+            # if received_data.get('test') != 'test':
+            #     log_to_file(f'webhook - webhook received: {received_data=}')
+            #     webhook_id = received_data.get('id')
+            #     log_to_file(f'webhook - {webhook_id=} - data are not stored in DB because testing mode')
+            #     return jsonify({'message': 'ok'}), 200
+
+            webhook_id = received_data.get('id')
+            log_to_file(f'webhook - {webhook_id=} - {received_data=}')
+            
+            #Control of received data:
             # valid webhook must contain the following keys 
-            keys_to_check = ['id', 'timestamp', 'guest_phone', 'number_of_guests', 'number_of_nights', 'check_in', 'check_out', 'guest_name']
+            keys_to_check = ['id', 'timestamp', 'guest_phone', 'number_of_guests', 'number_of_nights', 'check_in', 'check_out', 'guest_name', 'property_name']
             
             for key in keys_to_check:
                 if received_data.get(key) == None or received_data.get(key) == "":
                     #webhook is not valid
                     
-                    log_to_file('Webhook is not valid - missing key= ' + key)
+                    log_to_file(f'webhook -{webhook_id=} -  Webhook is not valid - missing key= ' + key)
                     
                     return jsonify({'message': 'Webhook is not valid'}), 500
                     #--end----------------
 
-            received_data['property_name'] = load_apartment_name(received_data['property_name'])
+            # OK, webhook is valid
+            # Load configuration from config.ini file
+            number_of_attempts, checked_interval, blocked_interval, use_for_apartments = load_config_ini()
+
+
+            # # to allow to use this app just for some apartments, in config.ini file must be set use_for_apartments=1,2,3,4,5. If value is ["all"] >>> all apartments are allowed
+            if use_for_apartments == ['all']:
+                pass
+            elif str(received_data['property_name']).strip() not in use_for_apartments:
+                log_to_file(f'webhook -{webhook_id=} -  Property name is not Allowed in Config.ini parameter >>> use_for_apartments - {received_data}')
+              
+                return jsonify({'message': 'Webhook is not valid'}), 200
+                #--end----------------
+
+            received_data['apartment_name'] = load_apartment_name(received_data['property_name'])
+            apartment_name = received_data['apartment_name']
+            log_to_file(f'webhook - {webhook_id=} - {apartment_name=}')
 
             #add webhook to db
+            log_to_file(f'webhook - {webhook_id=} - data stored to db')
+
             result = add_webhook_to_db(received_data)
             
 
             # reply to the webhook sender
             if result == True:
-                log_to_file("Webhook saved successfully")
+                log_to_file(f"webhook -{webhook_id=} -  Webhook saved successfully")
                 return jsonify({'message': 'ok'}), 200
                 #--end----------------
 
             else:
-                log_to_file("Webhook saving error")
-                log_to_file(f'{result=}')
+                log_to_file(f"webhook - {webhook_id=} - Webhook saving error")
+                log_to_file(f'webhook - {webhook_id=} - {result=}')
                 
                 return jsonify({'message': 'error'}), 500
                 #--end----------------
-            
-            #send_last_link(received_data)
+           
 
 
     except Exception as e:
-        log_to_file(f"exception during webhook receiving: {e}")
+        log_to_file(f"webhook - {webhook_id=} - exception during webhook receiving: {e}")
         
         return jsonify({'message': 'error'}), 500
 
 ###############################
 def load_apartment_name(property_name):
     
-    property_name = property_name.replace(" ", "")
+    try:
+        property_name = property_name.replace(" ", "")
 
-    with open(f"{project_folder}/data/nazvy_bytu.csv", mode='r', encoding='utf-8') as f:
-        apartments = f.readlines()
-        
-        for row in apartments:
-            row = row.split(";")
-            if row[0] == property_name:
-                return row[1].replace("\n", "")        
-    return 'Apartmán'
+        with open(f"{project_folder}/data/apartments_spec.json", mode='r', encoding='utf-8') as f:
+            apartments_spec = ast.literal_eval(f.read())
+            apartment_name = apartments_spec.get(int(property_name)).get('Popis_formulář')
+            if apartment_name:
+                return apartment_name
+            else:
+                return 'Apartmán'
+    
+    except Exception as e:
+        log_to_file(f"load_apartment_name - exception: {e}")
+        return 'Apartmán'   
+
 
 ################################
 # TEST
@@ -123,11 +155,7 @@ def home():
             
 ###############################
 if __name__ == '__main__':  
-    #app.run(port=5000, debug=True)
-
-    #app.run(port=433, debug=False)
-    #app.run(port=80, debug=True)
     app.run(debug=True)
-    #print("3")
+    
 
 

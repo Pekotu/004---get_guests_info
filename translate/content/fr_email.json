@@ -1,4 +1,0 @@
-{
-    "subject": "Enregistrement en ligne - {xapartmentx}",
-    "text": "Bonjour {xnamex},<br><br>Nous vous remercions d'avoir réservé un logement dans \"{xapartmentx}\" au cours de la période {xdate_startx} - {xdate_endx}. <br>Utilisez ce lien {xlinkx} pour l'enregistrement en ligne.<br><br>Nous vous remercions et vous souhaitons une bonne journée.<br><br>Jan Pokorný<br>www.HomeVibes.cz"
-}

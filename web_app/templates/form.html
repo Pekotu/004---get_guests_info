@@ -293,7 +293,7 @@
         <table class="table1">
             <tr>
                 <td class="t1tdL1">{{content['apartment_name']}}:</td>
-                <td class="t1tdP2">{{wd['property_name']}}</td>
+                <td class="t1tdP2">{{wd['apartment_name']}}</td>
             </tr>
             <tr>
                 <td class="t1tdL1">{{content['number_of_guests']}}:</td>
@@ -423,6 +423,7 @@
                     <input type="hidden" name="id" value="{{ wd['id'] }}">
                     <input type="hidden" name="webhook_data" value="{{ wd }}">
                     <input type="hidden" name="counter_of_saving" value="{{form_data.get('counter_of_saving', 0)}}">
+                    <!-- <input type="hidden" name="errors_from_form" value="{{ form_data.get('errors_from_form') }}"> -->
 
                 </fieldset>
 

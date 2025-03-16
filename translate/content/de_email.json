@@ -1,4 +1,0 @@
-{
-    "subject": "Online einchecken - {xapartmentx}",
-    "text": "Hallo {xnamex},<br><br> vielen Dank für die Buchung der Unterkunft in \"{xapartmentx}\" im Zeitraum {xdate_startx} - {xdate_endx}. <br> Benutzen Sie diesen Link {xlinkx} für den Online Check-in.<br><br> Vielen Dank und einen schönen Tag.<br><br>Jan Pokorný<br>www.HomeVibes.cz"
-}

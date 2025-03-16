@@ -1,0 +1,8 @@
+crontab -e
+
+* * * * * /bin/bash -c 'source /var/www/clients/client1/web26/web/get_guest_info/send_link/venv/bin/activate && /var/www/clients/client1/web26/web/get_guest_info/send_link/venv/bin/python /var/www/clients/client1/web26/web/get_guest_info/send_link/test_cron.py'
+
+
+* * * * * /bin/bash -c 'source /var/www/clients/client1/web26/web/get_guest_info/send_link/venv/bin/activate && /var/www/clients/client1/web26/web/get_guest_info/send_link/venv/bin/python /var/www/clients/client1/web26/web/get_guest_info/send_link/send_link2.py'
+
+* * * * * /var/www/clients/client1/web26/web/get_guest_info/send_link/CRON_send_link1_run.sh

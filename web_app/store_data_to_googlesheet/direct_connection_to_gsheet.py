@@ -24,8 +24,6 @@ def login_to_google_sheets():
     log_to_file('login_to_google_sheets')
 
     while True:
-        #gc = pygsheets.authorize(service_file=f'{folder_path}/google_keys/pk_credentials.json')
-
         gc = pygsheets.authorize(service_file=f'{folder_path}/google_keys/get-guest-info-13d629337977.json')
         
         # 3x pokus o autorizaci poté výjimka
@@ -63,9 +61,13 @@ def write_data_to_gsheet(data_from_form, errors):
         # list "kniha" has columns: id, form_data_stored_at, counter_of_saving, apartman, check_in, check_out, channel, booked_at, booked_by, booked_by_phone, booked_by_email
         
         # list "errors" has columns: id, first_name, family_name, birthday, street, town, country, passport, check_in, check_out, phone, email, error_first_name, error_family_name, error_birthday, error_street, error_town, error_country, error_passport, error_check_in, error_check_out, error_phone, error_email
-        file_name='Kniha_hostu_Home_Vibes'
+        
+        #file_name= "kniha_hostu" #'Kniha_hostu_Home_Vibes'
+        file_id = '1f64-rTRXom85po9vlLAnfWaG0I1fSAYqX3WCZJ8kLH0'
+        
         try:
-            sh = gc.open(file_name)
+            #sh = gc.open(file_name)
+            sh = gc.open_by_key(file_id)
         except Exception as e:
             log_to_file(f"error - open_gsheet {file_name} - {e}")
             return str(e)
@@ -76,8 +78,10 @@ def write_data_to_gsheet(data_from_form, errors):
         list = sh.worksheet_by_title('kniha')
 
         #reset filtru
-        list.clear_basic_filter()
-        
+        try:
+            list.clear_basic_filter()
+        except:
+            pass
 
         # Načtení všech dat ze sloupce 'id'
         id_column = list.get_col(1, include_tailing_empty=False)
@@ -108,7 +112,12 @@ def write_data_to_gsheet(data_from_form, errors):
 
             id_column = list.get_col(1, include_tailing_empty=False)
             row = len(id_column) + 1
-            host=0   
+            host=0
+            
+            #gsheet neumí zapsat + na začátek telefonního čísla   
+            if data_from_form.get('booked_by_phone'):
+                data_from_form.get('booked_by_phone').replace('+','')
+
             while data_from_form.get('first_name_' + str(host)) != None: 
                 values = []
                 for sl, header in enumerate(headers):
@@ -148,8 +157,10 @@ def write_errors_from_form_to_gsheet(id, sh, errors):
     list = sh.worksheet_by_title('errors')
 
     #reset filtru
-    list.clear_basic_filter()
-    
+    try:
+        list.clear_basic_filter()
+    except:
+        pass
 
     # Načtení všech dat ze sloupce 'id'
     id_column = list.get_col(1, include_tailing_empty=False)

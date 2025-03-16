@@ -1,4 +1,0 @@
-{ 
-    "subject": "Online check-in - <keep>{xapartmentx}</keep>",
-    "text": "Dobrý den <keep>{xnamex},<br><br></keep> děkuji za rezervaci ubytování v <keep>{xapartmentx}</keep> v termínu <keep> {xdate_startx} - {xdate_endx}. <br></keep> Použijte tento odkaz <keep>{xlinkx}</keep> pro <keep>online check-in.<br><br></keep> Děkuji a přeji hezký den.<keep><br><br>Jan Pokorný<br>www.HomeVibes.cz</keep>"
-}

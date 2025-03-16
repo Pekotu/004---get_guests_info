@@ -1,0 +1,12 @@
+{
+    "title": "Enter the phone number or email you received this link at",
+    "phone": "Telephone number with international dialling code",
+    "or": "or",
+    "email": "Email address",
+    "submit": "Send to",
+    "kontakt": "If you need help, please contact us at",
+    "blocked_page": "Too many bad attempts. This page is blocked until {xtillx}. Please try again later.",
+    "empty": "At least one field must be filled in",
+    "wrong_value": "The information you have entered does not match the information you have been linked to on this page",
+    "wrong_link": "You used the wrong link. Use the one you received in the email or text message"
+}
